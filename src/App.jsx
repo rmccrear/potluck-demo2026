@@ -17,11 +17,36 @@ function App() {
     setMeals(data)
   }
 
+  async function addMeal(event) {
+    event.preventDefault()
+    const form = event.target
+
+    const meal = {
+      "name": form.mealName.value,
+      "guest": form.guestName.value,
+      "serves": form.serves.value
+    }
+    const result = await supabase.from("mealssss").insert(meal)
+    if (result.error) {
+      console.log(result.error.message)
+      return
+    }
+  }
+
   return (
     <div>
       <h1>Potluck</h1>
       <button onClick={loadMeals}>Load</button>
       {meals.map( (meal)=> <MealCard key={meal.id} meal={meal}/> ) }
+      <article>
+        <h1> Add Meal</h1>
+        <form onSubmit={addMeal}>
+          <input type="text"   name="guestName" placeholder="Batman" />
+          <input type="text"   name="mealName"  placeholder="Mac and Cheese" />
+          <input type="number" name="serves" />
+          <button>Add Meal</button>
+        </form>
+      </article>
     </div>
   )
 }
