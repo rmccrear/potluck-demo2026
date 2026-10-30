@@ -9,11 +9,7 @@ function App() {
   const loadMeals = async () => {
     // const {records, loading, error} = useFetchData("https://xyz.cloudflare.com/...")
     const { data, error } = await supabase.from("meals").select()
-    if (error) {
-      console.log(error.message)
-      return
-    }
-    console.log(data)
+    // TODO: handle errors
     setMeals(data)
   }
 
@@ -26,6 +22,7 @@ function App() {
       "guest": form.guestName.value,
       "serves": form.serves.value
     }
+    console.log(meal)
     const result = await supabase.from("meals").insert(meal)
     if (result.error) {
       console.log(result.error.message)
@@ -33,22 +30,37 @@ function App() {
     }
   }
 
-  async function deleteMeal(id) {
-    console.log("Hello from Delete Meal")
-    const response = await supabase
+  async function handleAddPastalaya() {
+    console.log("Hello from Handle Add Pastalaya")
+    const { error } = await supabase
       .from('meals')
-      .delete()
-      .eq('id', id)
-    loadMeals()
+      .insert({ name: 'Pastalaya', guest: '?', serves: 9 })
+    //TODO: handle errors
+  }
+
+  async function handleAddJambalaya() {
+    console.log("Hello from Handle Add Jambalaya")
+    const { error } = await supabase
+      .from('meals')
+      .insert({ name: 'Jambalaya', guest: '?', serves: 9 })
+    //TODO: handle errors
+  }
+
+  async function handleAddChips() {
+    const { error } = await supabase
+     .from('meals')
+     .insert({ name: 'Chips', serves: 8, guest: "?" })
   }
 
   return (
     <div>
       <h1>Potluck</h1>
-      <button onClick={loadMeals}>Load</button>
-      
+      <button onClick={loadMeals}>Load</button>&nbsp;
+      <button onClick={handleAddPastalaya}>Add Pastalaya</button>
+      <button onClick={handleAddJambalaya}>Add Jambalaya</button>
+      <button onClick={handleAddChips}>Add Chips</button>
       {
-        meals.map((meal)=> ( <MealCard key={meal.id} meal={meal} deleteMeal={deleteMeal}/> ))
+        meals.map((meal)=> ( <MealCard key={meal.id} meal={meal}/> ))
       }
       <article>
         <h1> Add Meal</h1>
