@@ -26,18 +26,30 @@ function App() {
       "guest": form.guestName.value,
       "serves": form.serves.value
     }
-    const result = await supabase.from("mealssss").insert(meal)
+    const result = await supabase.from("meals").insert(meal)
     if (result.error) {
       console.log(result.error.message)
       return
     }
   }
 
+  async function deleteMeal(id) {
+    console.log("Hello from Delete Meal")
+    const response = await supabase
+      .from('meals')
+      .delete()
+      .eq('id', id)
+    loadMeals()
+  }
+
   return (
     <div>
       <h1>Potluck</h1>
       <button onClick={loadMeals}>Load</button>
-      {meals.map( (meal)=> <MealCard key={meal.id} meal={meal}/> ) }
+      
+      {
+        meals.map((meal)=> ( <MealCard key={meal.id} meal={meal} deleteMeal={deleteMeal}/> ))
+      }
       <article>
         <h1> Add Meal</h1>
         <form onSubmit={addMeal}>
